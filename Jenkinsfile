@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    // environment {
-    //     GIT_COMMIT_SHORT = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
-    // }
+    environment {
+        GIT_COMMIT_SHORT = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
+    }
 
     stages {
         stage('Checkout') {
@@ -12,41 +12,41 @@ pipeline {
             }
         }
 
-        // stage('Create Dockerfile') {
-        //     steps {
-        //         writeFile file: 'Dockerfile', text: '''
-        //             FROM php:7.4-fpm
+        stage('Create Dockerfile') {
+            steps {
+                writeFile file: 'Dockerfile', text: '''
+                    FROM php:7.4-fpm
 
-        //             # Install required extensions and dependencies
-        //             RUN apt-get update && apt-get install -y \
-        //                 libpng-dev \
-        //                 libjpeg-dev \
-        //                 libfreetype6-dev \
-        //                 libzip-dev \
-        //                 unzip \
-        //                 git \
-        //                 && docker-php-ext-configure gd --with-freetype --with-jpeg \
-        //                 && docker-php-ext-install -j$(nproc) gd \
-        //                 && docker-php-ext-install pdo_mysql zip
+                    # Install required extensions and dependencies
+                    RUN apt-get update && apt-get install -y \
+                        libpng-dev \
+                        libjpeg-dev \
+                        libfreetype6-dev \
+                        libzip-dev \
+                        unzip \
+                        git \
+                        && docker-php-ext-configure gd --with-freetype --with-jpeg \
+                        && docker-php-ext-install -j$(nproc) gd \
+                        && docker-php-ext-install pdo_mysql zip
 
-        //             # Install Composer
-        //             COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+                    # Install Composer
+                    COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-        //             # Set working directory
-        //             WORKDIR /var/www/html
+                    # Set working directory
+                    WORKDIR /var/www/html
 
-        //             # Copy application files
-        //             COPY . /var/www/html
+                    # Copy application files
+                    COPY . /var/www/html
 
-        //             # Install dependencies
-        //             RUN composer install --no-interaction --no-dev --optimize-autoloader
+                    # Install dependencies
+                    RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-        //             # Set permissions
-        //             RUN chown -R www-data:www-data /var/www/html/storage
-        //             RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
-        //             '''
-        //     }
-        // }
+                    # Set permissions
+                    RUN chown -R www-data:www-data /var/www/html/storage
+                    RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
+                    '''
+            }
+        }
 
         stage('Build Docker Image') {
             steps {

@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        GIT_COMMIT_SHORT = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
-    }
+    // environment {
+    //     GIT_COMMIT_SHORT = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
+    // }
 
     stages {
         stage('Checkout') {
@@ -79,10 +79,6 @@ pipeline {
         always {
             sh 'docker compose down --remove-orphans -v'
             sh 'docker compose ps'
-        }
-
-        failure {
-            // Configure notifications if required, e.g., email, Slack, etc.
         }
     }
 }

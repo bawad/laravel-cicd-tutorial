@@ -76,6 +76,11 @@ pipeline {
     }
 
     post {
+        always {
+            sh 'docker compose down --remove-orphans -v'
+            sh 'docker compose ps'
+        }
+
         failure {
             // Configure notifications if required, e.g., email, Slack, etc.
         }
